@@ -1,6 +1,5 @@
 import { config } from 'dotenv'
-import { globalAgent } from 'http';
-import {connect,IPacket, ISubscriptionGrant} from 'mqtt';
+import { connect,IPacket, ISubscriptionGrant } from 'mqtt';
 import { env } from 'process';
 config();
 
