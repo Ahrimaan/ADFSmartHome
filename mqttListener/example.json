@@ -1,0 +1,16 @@
+{
+    "Time": "2021-01-21T12:10:29",
+    "ENERGY": {
+        "TotalStartTime": "2020-04-01T14:23:11",
+        "Total": 360.120,
+        "Yesterday": 0.846,
+        "Today": 0.238,
+        "Period": 5,
+        "Power": 57,
+        "ApparentPower": 122,
+        "ReactivePower": 109,
+        "Factor": 0.46,
+        "Voltage": 227,
+        "Current": 0.540
+    }
+}
