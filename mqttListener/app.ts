@@ -1,18 +1,17 @@
 import { config } from 'dotenv'
 import { connect, IPacket, ISubscriptionGrant, IClientOptions } from 'mqtt';
 import { env } from 'process';
+import { ClientOptions } from './ClientOptions';
+import { MqttMessage } from './MqttMessageModel'
 config();
 
 
-class ClientOptions implements IClientOptions {
-    connectTimeout = 2;
-    keepalive = 2;
-    resubscribe = true;
-}
+
 
 let topics = env.TOPICS.split(',');
 let server = env.SERVER;
-let client = connect(`mqtt://${server}`, new ClientOptions());
+let port = Number.parseInt(env.PORT)
+let client = connect(`mqtt://${server}:${port}`, new ClientOptions());
 
 console.log(`Try to listening on ${server} to topics ${topics.join(',')}`)
 
@@ -27,7 +26,7 @@ client.on('offline', () => {
 client.on('connect', (message: IPacket) => {
     console.log(`Connected with server ${server} connectonmessage: ${message.cmd} `);
     client.subscribe(topics, null, (err: Error, grant: ISubscriptionGrant[]) => {
-        if (err !== undefined) {
+        if (err !== null) {
             console.error(`Error in subscription ${err.message}`)
         } else {
             console.log(`Subscribed to ${grant.length} topics`)
@@ -37,6 +36,7 @@ client.on('connect', (message: IPacket) => {
 });
 
 client.on('message', (topic: string, payload: Buffer, packet: IPacket) => {
-    console.log(`Recieved message in topic: ${topic} , payload:${payload.toString()} , packetCommand: ${packet.cmd}`)
+    let response : MqttMessage = JSON.parse(payload.toString());
+    console.log(`Recieved message in topic: ${topic} , payload:${JSON.stringify(response)} , packetCommand: ${packet.cmd}`)
 });
 
