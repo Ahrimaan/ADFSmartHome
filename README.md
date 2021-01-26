@@ -18,5 +18,12 @@ You have to have an .env file in the service directory with values:
 * AWS_CLIENTID=Your Client ID for the service user
 * AWS_CLIENTSECRET= Your client secret
 
+## e3dcScheduler
+
+Python service for periodicaly fetch data out of the photovoltaik (E3DC)
+
+You have to have an .env file in the service directory with values:
+* E3DC_IP= The IP Adress from the E3DC System
+
 TODOS:
 * Add CF Template for AWS Infrastructure
