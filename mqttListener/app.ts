@@ -3,6 +3,7 @@ config();
 import { connect, IPacket, ISubscriptionGrant, IClientOptions } from 'mqtt';
 import { env } from 'process';
 import { ClientOptions } from './ClientOptions';
+import { createItem } from './dynamoDbClient';
 import { MqttMessage } from './MqttMessageModel'
 
 
@@ -32,8 +33,13 @@ client.on('connect', (message: IPacket) => {
     });
 });
 
-client.on('message', (topic: string, payload: Buffer, packet: IPacket) => {
+client.on('message',async (topic: string, payload: Buffer, packet: IPacket) => {
     let response : MqttMessage = JSON.parse(payload.toString());
+    response.id = topic;
     console.log(`Recieved message in topic: ${topic} , payload:${JSON.stringify(response)} , packetCommand: ${packet.cmd}`)
+    if(await createItem(response)) {
+        console.log("Item saved to Database");
+    }else {
+        console.log("Could not save item to Database");
+    }    
 });
-

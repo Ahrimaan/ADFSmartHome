@@ -1,5 +1,6 @@
 export interface MqttMessage {
     Time: Date,
+    id:string,
     ENERGY: {
         TotalStartTime: Date
         Total: Number,
