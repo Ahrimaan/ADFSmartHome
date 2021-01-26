@@ -17,3 +17,6 @@ You have to have an .env file in the service directory with values:
 * AWS_REGION=your region at AWS eG (eu-central-1)
 * AWS_CLIENTID=Your Client ID for the service user
 * AWS_CLIENTSECRET= Your client secret
+
+TODOS:
+* Add CF Template for AWS Infrastructure
