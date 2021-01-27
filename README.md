@@ -22,7 +22,7 @@ You have to have an .env file in the service directory with values:
 
 Python service for periodicaly fetch data out of the photovoltaik (E3DC)
 
-You have to have an .env file in the service directory with values:
+You have to export the following environment variables (vby set in windows or export in linux)
 * E3DC_IP= The IP Adress from the E3DC System
 
 TODOS:
