@@ -24,6 +24,10 @@ Python service for periodicaly fetch data out of the photovoltaik (E3DC)
 
 You have to export the following environment variables (vby set in windows or export in linux)
 * E3DC_IP= The IP Adress from the E3DC System
+* REGION_NAME= your region at AWS eG (eu-central-1)
+* AWS_KEY= Your Client ID for the service user
+* AWS_SECRET= Your client secret
+* AWS_TABLENAME= Your dynamodb table name
 
 TODOS:
 * Add CF Template for AWS Infrastructure

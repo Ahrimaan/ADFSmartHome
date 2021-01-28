@@ -13,9 +13,15 @@ export async function createItem(item: MqttMessage): Promise<boolean> {
     const params = {
         TableName: process.env.DYNAMODB_TABLE,
         Item: {
-            id:item.id,
+            id: item.id.substr(item.id.indexOf('/') + 1, item.id.lastIndexOf('/')   - item.id.indexOf('/') -1 ),
             date:item.Time,
-            energy:item.ENERGY
+            startDate:item.ENERGY.TotalStartTime,
+            totalConsumption:item.ENERGY.Total,
+            currentPowerDraw:item.ENERGY.Power,
+            currentApparentPower: item.ENERGY.ApparentPower,
+            currentReactivePower: item.ENERGY.ReactivePower,
+            voltage:item.ENERGY.Voltage,
+            current:item.ENERGY.Current
         }
     }
     try {

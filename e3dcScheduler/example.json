@@ -1,0 +1,15 @@
+{
+    "date": "2021-01-28  14:20:06.966378",
+    "pvCurrent": 521,
+    "battery": 0,
+    "consumption": 449,
+    "external": 0,
+    "batteryLoad": 5,
+    "tracker_voltage_1": 529,
+    "tracker_voltage_2": 493,
+    "tracker_current_1": 51,
+    "tracker_current_2": 51,
+    "tracker_power_1": 270,
+    "tracker_power_2": 253,
+    "id": "e3dc_adf"
+}
