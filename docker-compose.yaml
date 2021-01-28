@@ -2,6 +2,15 @@ version: "3"
 services:
   mqtt_listener:
     network_mode: "bridge"
+    env_file:
+     - ./mqttListener/mqtt.env
     build:
       context: mqttListener/
       dockerfile: Dockerfile
+  e3dc_scheduler:
+    network_mode: "bridge"
+    build:
+      context: e3dcScheduler/
+      dockerfile: Dockerfile
+    env_file:
+     - ./e3dcScheduler/service.env

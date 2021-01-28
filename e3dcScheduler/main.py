@@ -1,5 +1,6 @@
 import schedule
 import time
+import datetime
 import boto3
 import os
 
@@ -61,7 +62,7 @@ def saveData(data):
 def job():
     result = get_values()
     result["id"] = "e3dc_adf"
-    print(result)
+    print(f'{datetime.date.today()}:{time.time() } ----> {result}')
     saveData(result)
 
 schedule.every(5).seconds.do(job)

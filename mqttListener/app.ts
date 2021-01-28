@@ -1,5 +1,3 @@
-import { config } from 'dotenv'
-config();
 import { connect, IPacket, ISubscriptionGrant, IClientOptions } from 'mqtt';
 import { env } from 'process';
 import { ClientOptions } from './ClientOptions';
