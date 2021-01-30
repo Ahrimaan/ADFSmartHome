@@ -21,13 +21,13 @@ You have to have an .env file in the service directory with values:
 ## e3dcScheduler
 
 Python service for periodicaly fetch data out of the photovoltaik (E3DC)
-
-You have to export the following environment variables (vby set in windows or export in linux)
+No local auth implemented in influx, will add that later
+You have to export the following environment variables (set in windows or export in linux)
 * E3DC_IP= The IP Adress from the E3DC System
-* REGION_NAME= your region at AWS eG (eu-central-1)
-* AWS_KEY= Your Client ID for the service user
-* AWS_SECRET= Your client secret
-* AWS_TABLENAME= Your dynamodb table name
+* INFLUX_DB = Database name
+* INFLUX_IP= IP adress influxdb
+* INFLUX_PORT= Portnumber influxdb
+
 
 TODOS:
 * Add CF Template for AWS Infrastructure
