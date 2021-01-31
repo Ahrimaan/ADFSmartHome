@@ -13,3 +13,40 @@
     "tracker_power_2": 253,
     "id": "e3dc_adf"
 }
+
+{
+    "date": "2021-01-31  18:49:38.729432",
+    "pvCurrent": 0,
+    "battery": -716,
+    "consumption": 713,
+    "external": -3,
+    "batteryLoad": 76,
+    "tracker_voltage_1": 75,
+    "tracker_voltage_2": 76,
+    "tracker_current_1": 0,
+    "tracker_current_2": 0,
+    "tracker_power_1": 0,
+    "tracker_power_2": 0,
+    "id": "e3dc_adf"
+}     
+[
+    {
+        "measurement": "PV Anlage",
+        "time": "2021-01-31  18:49:38.729432",
+        "fields": {
+            "pvCurrent": 0,
+            "batteryDraw": 0,
+            "batteryLoad": 0,
+            "consumption": 713,
+            "buy": 0,
+            "sell": 3,
+            "battery": -716,
+            "tracker_voltage_1": 75,
+            "tracker_voltage_2": 76,
+            "tracker_current_1": 0,
+            "tracker_current_2": 0,
+            "tracker_power_1": 0,
+            "tracker_power_2": 0
+        }
+    }
+]
