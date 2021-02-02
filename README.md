@@ -13,10 +13,7 @@ You have to have an .env file in the service directory with values:
 * CONNECTION_TIMEOUT= number of seconds for timeout
 * KEEP_ALIVE= keep alive number (how long should the connection have to stay alive)
 * RESUBSCRIBE= true or false 
-* DYNAMODB_TABLE= Your dynamodb table name
-* AWS_REGION=your region at AWS eG (eu-central-1)
-* AWS_CLIENTID=Your Client ID for the service user
-* AWS_CLIENTSECRET= Your client secret
+* INFLUX_URL = the url of your influx db instance
 
 ## e3dcScheduler
 
