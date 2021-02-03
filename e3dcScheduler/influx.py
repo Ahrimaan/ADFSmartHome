@@ -19,6 +19,7 @@ if dbExist == False:
 
 
 def saveData(item):
+    print(f'Recieved item : { item }')
     buy = int(item['external']) if int(item['external']) > 0 else 0
     sell = int(item['external']) * -1 if int(item['external']) < 0 else 0
     batDraw = int(item['battery']) * -1 if int(item['battery']) < 0 else 0
@@ -42,5 +43,6 @@ def saveData(item):
             "tracker_power_2": int(item['tracker_power_2']),
         }
     }]
+    print(f'Writing item : { data }')
     print(f'Writing to DB: {client.write_points(data)}')
     
