@@ -4,7 +4,7 @@ from datetime import datetime
 
 ip = os.getenv('E3DC_IP')
 print(f'Connecting to {ip}')
-client = ModbusTcpClient(ip)
+client = ModbusTcpClient('192.168.178.75')
 # all register -1 index 0
 register_feed = 40068 - 1
 register_batteryCurrent = 40070 - 1
@@ -23,7 +23,7 @@ register_power_2 = 40103 - 1
 def get_values():
     values = __read_value(40067, 16)
     tracker_data = __read_value(40095, 9)
-    return {
+    data = {
         "date": f'{datetime.now().date()}  {datetime.now().time()}',
         "pvCurrent": values[0],
         "battery": __read_battery_current(values),
@@ -37,12 +37,14 @@ def get_values():
         "tracker_power_1": tracker_data[6],
         "tracker_power_2": tracker_data[7],
     }
+    print(data)
+    return data
 
 
 def __read_battery_current(values):
     if values[3] > 0:
         return values[2] - values[3]
-    return values[3]
+    return values[2]
 
 
 def __read_external_current(values):
