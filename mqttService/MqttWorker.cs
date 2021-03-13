@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using smarthome.mqttService.Config;
+using smarthome.mqttService.Contracts;
 using smarthome.mqttService.Models;
 using System.Collections.Generic;
 using System.Text.Json;

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
-namespace smarthome.mqttService
+namespace smarthome.mqttService.Contracts
 {
     public interface IAmqpClient
     {

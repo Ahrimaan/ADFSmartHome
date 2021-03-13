@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using smarthome.mqttService.Config;
+using smarthome.mqttService.Contracts;
 
 namespace smarthome.mqttService
 {
