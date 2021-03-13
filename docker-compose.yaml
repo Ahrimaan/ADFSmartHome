@@ -6,6 +6,8 @@ services:
     ports:
       - "3000:3000"
     restart: always
+    networks:
+      - adfsmarthome
     environment: 
       - GF_AUTH_ANONYMOUS_ENABLED=true
     volumes:
@@ -14,6 +16,8 @@ services:
   influxdb:
     image: influxdb
     init: true
+    networks:
+      - adfsmarthome
     ports:
       - "8086:8086"
     restart: always
@@ -23,6 +27,8 @@ services:
   node-red:
     image: nodered/node-red:latest
     init: true
+    networks:
+      - adfsmarthome
     ports:
       - "1880:1880"
     restart: always
@@ -38,50 +44,74 @@ services:
     build:
       context: mqttListener/
       dockerfile: dockerfile
+    networks:
+      - adfsmarthome
     depends_on:
       - rabbitmq
 
   e3dc_scheduler:
     restart: always
     init: true
+    networks:
+      - adfsmarthome
     build:
       context: e3dcScheduler/
       dockerfile: dockerfile
     env_file: ./mqttListener/service.env
 
+  mqttservice:
+    restart: always
+    init: true
+    depends_on: 
+      - mqtt
+      - rabbitmq
+    networks:
+      - adfsmarthome
+    build:
+      context: mqttService/
+      dockerfile: Dockerfile
+
   mqtt:
     restart: always
     init: true
+    networks:
+      - adfsmarthome
     container_name: mosca_mqtt
     image: matteocollina/mosca
     ports:
       - 1883:1883    
 
-  zigbee2mqtt:
-    container_name: zigbee2mqtt
-    image: koenkk/zigbee2mqtt
-    volumes:
-      - ./.docker/zigbee:/app/data
-      - /run/udev:/run/udev:ro
-    devices:
-      - /dev/ttyACM0:/dev/ttyACM0
-    restart: always
-    privileged: true
-    environment:
-      - TZ=Europe/Amsterdam
-
   rabbitmq:
     image: rabbitmq:3.6-management
     init: true
+    networks:
+      - adfsmarthome
     container_name: rabbitmq
     restart: always
     hostname: adfrabbit
     ports:
       - 15672:15672
+      - 5672:5672
     volumes:
       - ./rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
       - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
       - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
+
+
+  # zigbee2mqtt:
+  #   container_name: zigbee2mqtt
+  #   image: koenkk/zigbee2mqtt
+  #   networks:
+  #     - adfsmarthome
+  #   volumes:
+  #     - ./.docker/zigbee:/app/data
+  #     - /run/udev:/run/udev:ro
+  #   devices:
+  #     - /dev/ttyACM0:/dev/ttyACM0
+  #   restart: always
+  #   privileged: true
+  #   environment:
+  #     - TZ=Europe/Amsterdam
 
 networks:
   adfsmarthome:

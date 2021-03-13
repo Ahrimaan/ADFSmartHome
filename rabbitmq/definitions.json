@@ -3,7 +3,7 @@
     "users": [
      {
       "name": "admin",
-      "password_hash": "INSERT_HASHEDPW_HERE",
+      "password_hash": "QWW3g5ttVnc0Y89ywXjBXyIE9a2gcOekTlObXQNvyFC3pzRG",
       "hashing_algorithm": "rabbit_password_hashing_sha256",
       "tags": "administrator"
      }

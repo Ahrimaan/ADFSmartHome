@@ -8,6 +8,10 @@ lerna-debug.log*
 *.env
 .target
 .docker
+bin
+obj
+Properties
+.vs
 e3dcScheduler/.idea/
 .idea/
 # Diagnostic reports (https://nodejs.org/api/report.html)
