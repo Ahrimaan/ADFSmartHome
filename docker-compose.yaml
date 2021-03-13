@@ -1,18 +1,87 @@
 version: "3"
 services:
+  grafana:
+    image: grafana/grafana
+    init: true
+    ports:
+      - "3000:3000"
+    restart: always
+    environment: 
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+    volumes:
+      - ./.docker/grafana_data:/var/lib/grafana
+
+  influxdb:
+    image: influxdb
+    init: true
+    ports:
+      - "8086:8086"
+    restart: always
+    volumes:
+      - ./.docker/influx_data:/var/lib/influxdb
+
+  node-red:
+    image: nodered/node-red:latest
+    init: true
+    ports:
+      - "1880:1880"
+    restart: always
+    environment:
+      - TZ=Europe/Berlin
+    volumes:
+      - ./.docker/nodered_data:/data
+
   mqtt_listener:
-    network_mode: "bridge"
-    restart: on-failure
-    env_file:
-     - ./mqttListener/mqtt.env
+    restart: always
+    init: true
+    env_file: ./mqttListener/service.env
     build:
       context: mqttListener/
       dockerfile: dockerfile
+    depends_on:
+      - rabbitmq
+
   e3dc_scheduler:
-    network_mode: "bridge"
-    restart: on-failure
+    restart: always
+    init: true
     build:
       context: e3dcScheduler/
       dockerfile: dockerfile
-    env_file:
-     - ./e3dcScheduler/service.env
+    env_file: ./mqttListener/service.env
+
+  mqtt:
+    restart: always
+    init: true
+    container_name: mosca_mqtt
+    image: matteocollina/mosca
+    ports:
+      - 1883:1883    
+
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt
+    volumes:
+      - ./.docker/zigbee:/app/data
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    restart: always
+    privileged: true
+    environment:
+      - TZ=Europe/Amsterdam
+
+  rabbitmq:
+    image: rabbitmq:3.6-management
+    init: true
+    container_name: rabbitmq
+    restart: always
+    hostname: adfrabbit
+    ports:
+      - 15672:15672
+    volumes:
+      - ./rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+      - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
+
+networks:
+  adfsmarthome:

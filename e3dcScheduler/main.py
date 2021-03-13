@@ -1,19 +1,20 @@
 import schedule
 import time
-import datetime
-import os
-
 from api import get_values
-from influx import saveData
 
 
-def job():
+def getApiValuesJob():
     result = get_values()
     result["id"] = "e3dc_adf"
-    saveData(result)
+    # Send Data to Queue
+    print(result)
 
-schedule.every(5).seconds.do(job)
+def main():
+    while True:
+        schedule.run_pending()
+        time.sleep(0.2)
 
-while True:
-    schedule.run_pending()
-    time.sleep(0.2)
+schedule.every(5).seconds.do(getApiValuesJob)
+
+if __name__ == "__main__":
+    main()

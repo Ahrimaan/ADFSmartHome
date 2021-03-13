@@ -6,7 +6,6 @@ COPY package.json .
 
 ADD . /usr/src/app
 RUN npm install
-RUN npm install
 RUN chmod a+x node_modules/typescript/bin/tsc
 RUN #!/usr/bin/env bash
 RUN chmod a+x node_modules/.bin/tsc

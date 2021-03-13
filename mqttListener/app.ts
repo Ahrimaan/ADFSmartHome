@@ -1,13 +1,15 @@
 import { connect, IPacket, ISubscriptionGrant, IClientOptions } from 'mqtt';
 import { env } from 'process';
-import { ClientOptions } from './ClientOptions';
-import { saveData } from './influxClient'
-import { MqttMessage } from './MqttMessageModel'
+import { ClientOptions } from './model/ClientOptions';
+//import { saveData } from './influxClient'
+import { MqttMessage } from './model/MqttMessageModel'
 
 
 let topics = env.TOPICS.indexOf(',') > 0 ? env.TOPICS.split(',') : env.TOPICS ;
 let server = env.SERVER;
 let port = Number.parseInt(env.PORT)
+let clientOptions = new ClientOptions();
+console.log(clientOptions)
 let client = connect(`mqtt://${server}:${port}`, new ClientOptions());
 
 console.log(`Try to listening on ${server}`)
@@ -35,5 +37,5 @@ client.on('message',async (topic: string, payload: Buffer, packet: IPacket) => {
     let response : MqttMessage = JSON.parse(payload.toString());
     response.id = topic;
     console.log(`Recieved message in topic: ${topic} , payload:${JSON.stringify(response)} , packetCommand: ${packet.cmd}`)
-    saveData(response)    
+    //saveData(response)    
 });

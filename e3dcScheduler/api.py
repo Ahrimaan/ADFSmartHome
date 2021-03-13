@@ -37,7 +37,6 @@ def get_values():
         "tracker_power_1": tracker_data[6],
         "tracker_power_2": tracker_data[7],
     }
-    print(data)
     return data
 
 
