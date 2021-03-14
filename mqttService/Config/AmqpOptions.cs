@@ -8,8 +8,6 @@
 
         public string Password { get; set; }
 
-        public string Queue { get; set; }
-
         public string Exchange { get; set; }
     }
 }

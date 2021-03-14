@@ -37,18 +37,6 @@ services:
     volumes:
       - ./.docker/nodered_data:/data
 
-  mqtt_listener:
-    restart: always
-    init: true
-    env_file: ./mqttListener/service.env
-    build:
-      context: mqttListener/
-      dockerfile: dockerfile
-    networks:
-      - adfsmarthome
-    depends_on:
-      - rabbitmq
-
   e3dc_scheduler:
     restart: always
     init: true
@@ -57,13 +45,13 @@ services:
     build:
       context: e3dcScheduler/
       dockerfile: dockerfile
-    env_file: ./mqttListener/service.env
+    env_file: ./e3dcScheduler/service.env
 
   mqttservice:
     restart: always
     init: true
     depends_on: 
-      - mqtt
+      - mqttserver
       - rabbitmq
     networks:
       - adfsmarthome
@@ -71,7 +59,19 @@ services:
       context: mqttService/
       dockerfile: Dockerfile
 
-  mqtt:
+  timeseries:
+    restart: always
+    init: true
+    depends_on: 
+      - influxdb
+      - rabbitmq
+    networks:
+      - adfsmarthome
+    build:
+      context: TimeSeriesCollector/
+      dockerfile: Dockerfile
+
+  mqttserver:
     restart: always
     init: true
     networks:
@@ -94,6 +94,7 @@ services:
       - 5672:5672
     volumes:
       - ./rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ./.docker/rabbitmq/data:/var/lib/rabbitmq/mnesia/
       - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
       - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
 

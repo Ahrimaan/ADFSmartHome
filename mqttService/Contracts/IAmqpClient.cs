@@ -1,12 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
-using smarthome.mqttService.Config;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
-
-namespace smarthome.mqttService.Contracts
+﻿namespace smarthome.mqttService.Contracts
 {
     public interface IAmqpClient
     {

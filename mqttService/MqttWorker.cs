@@ -15,26 +15,40 @@ namespace smarthome.mqttService
     public class MqttWorker : BackgroundService
     {
         private readonly ILogger<MqttWorker> _logger;
-        private MqttClient client;
+        private MqttClient _client;
         private TopicDictionary _dic;
         private IAmqpClient _amqp;
+        private string _clientId => "mqttService";
 
         public MqttWorker(MqttOption options, ILogger<MqttWorker> logger, TopicDictionary dict, IAmqpClient amqpClient)
         {
             _amqp = amqpClient;
             _dic = dict;
             _logger = logger;
-            client = new MqttClient(options.Server);
-            client.Connect("mqttService");
+            _client = GetMqttClient(options.Server,options.Topics);
+
+        }
+
+        private MqttClient GetMqttClient(string server, string[] topics)
+        {
+            var client = new MqttClient(server);
+            client.Connect(_clientId);
             client.MqttMsgPublishReceived += MqttClient_MqttMsgPublishReceived;
-            client.Subscribe(options.Topics, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
+            client.Subscribe(topics, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
+            //client.ConnectionClosed += Client_ConnectionClosed;
+            return client;
+        }
+
+        private void Client_ConnectionClosed(object sender, System.EventArgs e)
+        {
+            _client.Connect(_clientId);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             if(stoppingToken.IsCancellationRequested)
             {
-                client.Disconnect();
+                _client.Disconnect();
             }
             await Task.Delay(100);
         }

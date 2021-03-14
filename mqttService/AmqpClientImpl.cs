@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using smarthome.mqttService.Config;
+using smarthome.mqttService.Contracts;
 using System.Text;
 using System.Text.Json;
 
@@ -8,16 +9,28 @@ namespace smarthome.mqttService
 {
     public class AmqpClient : IAmqpClient
     {
-        IModel channel;
-        string routingKey;
-        string exchange;
+        IModel _channel;
+        AmqpOptions _options;
 
         public AmqpClient(AmqpOptions options, ILogger<MqttWorker> logger)
         {
+            _options = options;
             var serialized = JsonSerializer.Serialize(options);
             logger.LogInformation(serialized);
-            this.routingKey = options.Queue;
-            this.exchange = options.Exchange;
+            _channel = GetRabbitChannel(options);
+        }
+
+        public void SendMessageToQueue(string message)
+        {
+            var body = Encoding.UTF8.GetBytes(message);
+            _channel.BasicPublish(exchange: _options.Exchange,
+                                 routingKey: "",
+                                 basicProperties: null,
+                                 body: body);
+        }
+
+        private IModel GetRabbitChannel(AmqpOptions options)
+        {
             var factory = new ConnectionFactory()
             {
                 HostName = options.Server,
@@ -28,16 +41,14 @@ namespace smarthome.mqttService
             var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
             channel.ExchangeDeclare(options.Exchange, ExchangeType.Fanout, durable: true);
-            this.channel = channel;
+            channel.ModelShutdown += Channel_ModelShutdown;
+            return channel;
         }
 
-        public void SendMessageToQueue(string message)
+        private void Channel_ModelShutdown(object sender, ShutdownEventArgs e)
         {
-            var body = Encoding.UTF8.GetBytes(message);
-            channel.BasicPublish(exchange: exchange,
-                                 routingKey: routingKey,
-                                 basicProperties: null,
-                                 body: body);
+            // If channel closes we open it again
+            _channel = GetRabbitChannel(_options);
         }
     }
 }
