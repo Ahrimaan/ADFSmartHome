@@ -20,7 +20,7 @@ services:
       - adfsmarthome
     ports:
       - "8086:8086"
-    env_file: ./influxdb.env
+    env_file: ./influxdb/influxdb.env
     restart: always
     volumes:
       - ./.docker/influxData:/var/lib/influxdb2
