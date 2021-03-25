@@ -35,7 +35,6 @@ namespace smarthome.mqttService
             client.Connect(_clientId);
             client.MqttMsgPublishReceived += MqttClient_MqttMsgPublishReceived;
             client.Subscribe(topics, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
-            //client.ConnectionClosed += Client_ConnectionClosed;
             return client;
         }
 
@@ -57,7 +56,8 @@ namespace smarthome.mqttService
         {
             var message = JsonSerializer.Deserialize<EnergyMessage>(e.Message);
             message.Device = _dic.Mapping.GetValueOrDefault(e.Topic);
-            var serialized = JsonSerializer.Serialize(message);
+            var dic = message.ToDic();
+            var serialized = JsonSerializer.Serialize(dic);
             _logger.LogInformation(serialized);
             _amqp.SendMessageToQueue(serialized);
         }
