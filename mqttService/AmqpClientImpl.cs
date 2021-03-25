@@ -24,7 +24,7 @@ namespace smarthome.mqttService
         {
             var body = Encoding.UTF8.GetBytes(message);
             _channel.BasicPublish(exchange: _options.Exchange,
-                                 routingKey: "",
+                                 routingKey: _options.RoutingKey,
                                  basicProperties: null,
                                  body: body);
         }
@@ -40,7 +40,6 @@ namespace smarthome.mqttService
             };
             var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
-            channel.ExchangeDeclare(options.Exchange, ExchangeType.Fanout, durable: true);
             channel.ModelShutdown += Channel_ModelShutdown;
             return channel;
         }

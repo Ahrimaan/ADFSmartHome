@@ -1,4 +1,4 @@
-﻿namespace smarthome.mqttService.Config
+﻿namespace TimeSeriesCollector.Config
 {
     public class AmqpOptions
     {
@@ -8,8 +8,12 @@
 
         public string Password { get; set; }
 
-        public string Exchange { get; set; }
+        public string Queue { get; set; }
 
-        public string RoutingKey { get; set; }
+        public bool Durable { get; set; }
+
+        public bool Requeue { get; set; }
+
+        public string Exchange { get; set; }
     }
 }

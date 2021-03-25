@@ -14,15 +14,16 @@ services:
       - ./.docker/grafana_data:/var/lib/grafana
 
   influxdb:
-    image: influxdb
+    image: influxdb:2.0
     init: true
     networks:
       - adfsmarthome
     ports:
       - "8086:8086"
+    env_file: ./influxdb.env
     restart: always
     volumes:
-      - ./.docker/influx_data:/var/lib/influxdb
+      - ./.docker/influxData:/var/lib/influxdb2
 
   node-red:
     image: nodered/node-red:latest

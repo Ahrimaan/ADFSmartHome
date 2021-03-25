@@ -12,6 +12,7 @@ bin
 obj
 Properties
 .vs
+.venv
 e3dcScheduler/.idea/
 .idea/
 # Diagnostic reports (https://nodejs.org/api/report.html)
