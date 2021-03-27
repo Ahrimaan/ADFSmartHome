@@ -3,9 +3,6 @@ import pika
 import os
 import json
 import dateutil.parser as parser
-import time
-
-from requests.api import head
 
 rabbit_server = os.getenv('RABBIT_SERVER')
 rabbit_user=os.getenv('RABBIT_USER')

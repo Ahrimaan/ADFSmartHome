@@ -47,6 +47,8 @@ services:
       context: e3dcScheduler/
       dockerfile: dockerfile
     env_file: ./e3dcScheduler/service.env
+    environment:
+      - PYTHONUNBUFFERED=1
 
   mqttservice:
     restart: always
@@ -72,6 +74,8 @@ services:
       context: timeSeriesService/
       dockerfile: dockerfile
     env_file: ./timeSeriesService/service.env
+    environment:
+      - PYTHONUNBUFFERED=1
 
   mqttserver:
     restart: always
