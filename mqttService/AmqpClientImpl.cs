@@ -11,17 +11,18 @@ namespace smarthome.mqttService
     {
         IModel _channel;
         AmqpOptions _options;
+        ILogger<MqttWorker> _logger;
 
         public AmqpClient(AmqpOptions options, ILogger<MqttWorker> logger)
         {
+            _logger = logger;
             _options = options;
-            var serialized = JsonSerializer.Serialize(options);
-            logger.LogInformation(serialized);
             _channel = GetRabbitChannel(options);
         }
 
         public void SendMessageToQueue(string message)
         {
+            _logger.LogInformation($"Sending Data to the Queue {message}");
             var body = Encoding.UTF8.GetBytes(message);
             _channel.BasicPublish(exchange: _options.Exchange,
                                  routingKey: _options.RoutingKey,

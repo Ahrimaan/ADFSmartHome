@@ -3,6 +3,7 @@ import time
 import os
 from api import get_values
 import pika
+import json
 
 rabbit_server = os.getenv('RABBIT_SERVER')
 rabbit_user=os.getenv('RABBIT_USER')
@@ -12,7 +13,7 @@ rabbit_exchange=os.getenv('RABBIT_QUEUE')
 rabbit_routingkey=os.getenv('RABBIT_ROUTINGKEY')
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=env,port=rabbit_port,credentials=pika.PlainCredentials(rabbit_user,rabbit_password)))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_server,port=rabbit_port,credentials=pika.PlainCredentials(rabbit_user,rabbit_password)))
 channel = connection.channel()
 
 def getApiValuesJob():
@@ -22,7 +23,7 @@ def getApiValuesJob():
     sendData(result)
 
 def sendData(data):
-    channel.basic_publish(rabbit_exchange,rabbit_routingkey,data)
+    channel.basic_publish(rabbit_exchange,rabbit_routingkey,json.dumps(data))
 
 def main():
     while True:

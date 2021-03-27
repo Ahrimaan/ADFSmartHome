@@ -26,7 +26,6 @@ namespace smarthome.mqttService
             _dic = dict;
             _logger = logger;
             _client = GetMqttClient(options.Server,options.Topics);
-
         }
 
         private MqttClient GetMqttClient(string server, string[] topics)
