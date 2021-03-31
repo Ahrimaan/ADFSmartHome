@@ -1,41 +1,43 @@
+from pika.adapters.blocking_connection import BlockingChannel, BlockingConnection
 import requests
 import pika
 import os
 import json
 import dateutil.parser as parser
 
-rabbit_server = os.getenv('RABBIT_SERVER')
-rabbit_user = os.getenv('RABBIT_USER')
-rabbit_password = os.getenv('RABBIT_PASS')
-rabbit_port = os.getenv('RABBIT_PORT')
-rabbit_queue = os.getenv('RABBIT_QUEUE')
-influx_host = os.getenv('INFLUX_HOST')
-influx_port = os.getenv('INFLUX_PORT')
-influx_token = os.getenv('INFLUX_TOKEN')
-influx_bucket = os.getenv('INFLUX_BUCKET')
-influx_org = os.getenv('INFLUX_ORG')
-plug_routing_key = os.getenv('ROUTINGKEY_PLUG')
-pv_routing_key = os.getenv('ROUTINGKEY_PV')
-influx_url = 'http://{influxhost}:{influxport}/api/v2/write?bucket={influxbucket}&precision=s&org={influxorg}'
-smartplug_datatemplate = "plugs,Device={device} Total={total},Yesterday={yesterday},Today={today},Power={power},Voltage={voltage},Current={current} {time}"
-pv_template = "pv,id={id} current={current},battery={battery},consumption={consumption},external={external},battery_load={battery_load},v_tracker_1={v_tracker_1},v_tracker_2={v_tracker_2},a_tracker_1={a_tracker_1},a_tracker_2={a_tracker_2},w_tracker_1={w_tracker_1},w_tracker_2={w_tracker_2} {date}"
+rabbit_server:str = os.getenv('RABBIT_SERVER')
+rabbit_user:str = os.getenv('RABBIT_USER')
+rabbit_password:str = os.getenv('RABBIT_PASS')
+rabbit_port:str = os.getenv('RABBIT_PORT')
+rabbit_queue:str = os.getenv('RABBIT_QUEUE')
+influx_host:str = os.getenv('INFLUX_HOST')
+influx_port:str = os.getenv('INFLUX_PORT')
+influx_token:str = os.getenv('INFLUX_TOKEN')
+influx_bucket:str = os.getenv('INFLUX_BUCKET')
+influx_org:str = os.getenv('INFLUX_ORG')
+plug_routing_key:str = os.getenv('ROUTINGKEY_PLUG')
+pv_routing_key:str = os.getenv('ROUTINGKEY_PV')
+influx_url:str = 'http://{influxhost}:{influxport}/api/v2/write?bucket={influxbucket}&precision=s&org={influxorg}'
+smartplug_datatemplate:str = "plugs,Device={device} Total={total},Yesterday={yesterday},Today={today},Power={power},Voltage={voltage},Current={current} {time}"
+pv_template:str = "pv,id={id} current={current},battery={battery},consumption={consumption},external={external},battery_load={battery_load},v_tracker_1={v_tracker_1},v_tracker_2={v_tracker_2},a_tracker_1={a_tracker_1},a_tracker_2={a_tracker_2},w_tracker_1={w_tracker_1},w_tracker_2={w_tracker_2} {date}"
 
 def setup_queue():
 
-    connection = pika.BlockingConnection(pika.ConnectionParameters(
+    connection:BlockingConnection = pika.BlockingConnection(pika.ConnectionParameters(
         host=rabbit_server, port=rabbit_port, credentials=pika.PlainCredentials(rabbit_user, rabbit_password)))
-    channel = connection.channel()
+    channel:BlockingChannel = connection.channel()
     channel.basic_consume(rabbit_queue, auto_ack=False,
-                          on_message_callback=callback)
+                          on_message_callback=on_newmessage_from_rabbit)
     channel.start_consuming()
 
 
-def callback(ch, method, properties, body):
+def on_newmessage_from_rabbit(ch, method, properties, body):
     print(" [x] Received %r" % body)
 
-    data_recieved_bytes = body.decode('utf8').replace("'", '"')
-    data_recieved_json = json.loads(data_recieved_bytes)
-    if save_timeseries_data(data_recieved_json, method.routing_key):
+    data_recieved_bytes:str = body.decode('utf8').replace("'", '"')
+    data_recieved_json:any = json.loads(data_recieved_bytes)
+    is_successfull = save_timeseries_data(data_recieved_json, method.routing_key)
+    if is_successfull:
         ch.basic_ack(delivery_tag=method.delivery_tag)
     else:
         ch.basic_reject(delivery_tag=method.delivery_tag, requeue=True)
@@ -46,7 +48,7 @@ def main():
 
 
 def save_timeseries_data(queue_data, routing_key):
-    data = None
+    data:dict = None
     
     if routing_key == plug_routing_key:
         print("Recieved requst from plugs")
