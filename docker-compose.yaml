@@ -1,6 +1,6 @@
 version: "3"
 services:
-  grafana:
+  chronograf:
     image: grafana/grafana
     init: true
     ports:
@@ -26,7 +26,8 @@ services:
       - ./.docker/influxData:/var/lib/influxdb2
 
   n8n:
-    image: n8nio/n8n
+    image: n8nio/n8n:latest-rpi # set n8nio/n8n when not running on raspberry
+    restart: always
     container_name: n8n
     volumes:
       - ./.docker/n8n:/home/node/.n8n
@@ -60,19 +61,19 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
 
-  mqttservice:
-    restart: always
-    init: true
-    depends_on: 
-      - mqttserver
-      - rabbitmq
-    networks:
-      - adfsmarthome
-    build:
-      context: mqttService/
-      dockerfile: Dockerfile
+  # mqttservice:
+  #   restart: always
+  #   init: true
+  #   depends_on: 
+  #     - mqttserver
+  #     - rabbitmq
+  #   networks:
+  #     - adfsmarthome
+  #   build:
+  #     context: mqttService/
+  #     dockerfile: Dockerfile
 
-  timeseries:
+  timeseries-service:
     restart: always
     init: true
     depends_on: 
@@ -87,15 +88,18 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
 
-  mqttserver:
+  mqtt-server:
     restart: always
     init: true
     networks:
       - adfsmarthome
-    container_name: mosca_mqtt
-    image: matteocollina/mosca
+    container_name: mosquitto
+    image: eclipse-mosquitto
+    volumes: 
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
     ports:
-      - 1883:1883    
+      - 1883:1883 
+      - 9001:9001   
 
   rabbitmq:
     image: rabbitmq:3.6-management
@@ -114,21 +118,20 @@ services:
       - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
       - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
 
-
-  # zigbee2mqtt:
-  #   container_name: zigbee2mqtt
-  #   image: koenkk/zigbee2mqtt
-  #   networks:
-  #     - adfsmarthome
-  #   volumes:
-  #     - ./.docker/zigbee:/app/data
-  #     - /run/udev:/run/udev:ro
-  #   devices:
-  #     - /dev/ttyACM0:/dev/ttyACM0
-  #   restart: always
-  #   privileged: true
-  #   environment:
-  #     - TZ=Europe/Amsterdam
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt
+    networks:
+      - adfsmarthome
+    volumes:
+      - ./.docker/zigbee:/app/data
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    restart: always
+    privileged: true
+    environment:
+      - TZ=Europe/Amsterdam
 
 networks:
   adfsmarthome:

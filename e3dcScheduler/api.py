@@ -20,7 +20,7 @@ register_power_1 = 40102 - 1
 register_power_2 = 40103 - 1
 
 
-def get_values():
+def get_pv_values():
     values = __read_value(40067, 16)
     tracker_data = __read_value(40095, 9)
     data = {
